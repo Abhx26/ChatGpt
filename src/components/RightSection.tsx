@@ -12,8 +12,13 @@ if (!API_KEY) {
     throw new Error("Missing NEXT_PUBLIC_OPENAI_API_KEY environment variable.");
 }
 
-const RightSection = () => {
-    const trainingPrompt = [
+type Message = {
+    role: 'user' | 'model';
+    parts: { text: string }[];
+};
+
+const RightSection: React.FC = () => {
+    const trainingPrompt: Message[] = [
         {
             role: "user",
             parts: [{ text: "This is Introductory dialogue for any prompt : 'Hello, my dear friend, I am the CHATGPT Bot. Ask me anything regarding procurement, purchase, and logistics. I will be happy to help you.'"}]
@@ -47,13 +52,13 @@ const RightSection = () => {
         "What are some effective ways to prevent cavities in children, and how often should they visit the dentist?",
     ];
 
-    const [message, setMessage] = useState('');
-    const [isSent, setIsSent] = useState(true);
-    const [allMessages, setAllMessages] = useState([]);
+    const [message, setMessage] = useState<string>('');
+    const [isSent, setIsSent] = useState<boolean>(true);
+    const [allMessages, setAllMessages] = useState<Message[]>([]);
 
     const sendMessage = async (msg: string) => {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
-        const messagesToSend = [
+        const messagesToSend: Message[] = [
             ...trainingPrompt,
             ...allMessages,
             {
@@ -79,7 +84,7 @@ const RightSection = () => {
 
             const responseMessage = resjson.candidates[0]?.content?.parts[0]?.text || "Sorry, I couldn't generate a response.";
 
-            const newAllMessages = [
+            const newAllMessages: Message[] = [
                 ...allMessages,
                 { role: "user", parts: [{ text: msg }] },
                 { role: "model", parts: [{ text: responseMessage }] }
@@ -103,8 +108,7 @@ const RightSection = () => {
         <div className={styles.rightSection}>
             <div className={styles.rightin}>
                 <div className={styles.header}>
-                    <p className={styles.headerText}>Chat</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={styles.headerIcon}>
+                    <p className={styles.headerText}>Chat</ p>                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={styles.headerIcon}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </div>
